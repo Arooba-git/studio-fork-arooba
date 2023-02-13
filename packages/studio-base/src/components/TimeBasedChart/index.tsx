@@ -141,6 +141,7 @@ export type Props = {
 // component. Uses chart.js internally, with a zoom/pan plugin, and with our
 // standard tooltips.
 export default function TimeBasedChart(props: Props): JSX.Element {
+  const requestID = useRef<number>(0);
   const {
     datasetId,
     type,
@@ -195,7 +196,7 @@ export default function TimeBasedChart(props: Props): JSX.Element {
 
     if (current) {
       // allow the chart offscreen canvas to render to screen before calling done
-      requestAnimationFrame(current);
+      requestID.current = requestAnimationFrame(current);
     }
   }, []);
 
@@ -203,6 +204,7 @@ export default function TimeBasedChart(props: Props): JSX.Element {
     // cleanup paused frames on unmount or dataset changes
     return () => {
       onFinishRender();
+      cancelAnimationFrame(requestID.current);
     };
   }, [pauseFrame, onFinishRender]);
 
