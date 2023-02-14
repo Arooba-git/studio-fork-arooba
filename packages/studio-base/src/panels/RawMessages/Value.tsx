@@ -77,7 +77,7 @@ const emptyAction: ValueActionItem = {
 const MAX_ACTION_ITEMS = 4;
 
 export default function Value(props: ValueProps): JSX.Element {
-  const timeOutID: any = useRef(undefined);
+  const timeOutID = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const {
     arrLabel,
     basePath,
@@ -190,7 +190,9 @@ export default function Value(props: ValueProps): JSX.Element {
 
   useEffect(() => {
     return () => {
-      clearTimeout(timeOutID.current);
+      if (timeOutID.current != undefined) {
+        clearTimeout(timeOutID.current);
+      }
     };
   }, []);
 

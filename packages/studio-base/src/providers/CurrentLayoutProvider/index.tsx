@@ -158,7 +158,7 @@ export default function CurrentLayoutProvider({
 
   // When the user performs an action, we immediately setLayoutState to update the UI. Saving back
   // to the LayoutManager is debounced.
-  const debouncedSaveTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const debouncedSaveTimeout = useRef<ReturnType<typeof setTimeout> | undefined>();
   const performAction = useCallback(
     (action: PanelsActions) => {
       if (
@@ -232,7 +232,9 @@ export default function CurrentLayoutProvider({
     layoutManager.on("change", listener);
     return () => {
       layoutManager.off("change", listener);
-      clearTimeout(debouncedSaveTimeout.current);
+      if (debouncedSaveTimeout.current) {
+        clearTimeout(debouncedSaveTimeout.current);
+      }
     };
   }, [layoutManager, setLayoutState]);
 

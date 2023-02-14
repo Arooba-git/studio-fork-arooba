@@ -15,13 +15,15 @@ export default {
 };
 
 function useHoverOnPanel(andThen?: () => void) {
+  const timeOutID = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => {
     return () => {
-      clearTimeout(timeOutID.current);
+      if (timeOutID.current != undefined) {
+        clearTimeout(timeOutID.current);
+      }
     };
   }, []);
 
-  const timeOutID: any = useRef(undefined);
   const callback = useRef(andThen); // should not change
   return () => {
     const container = document.querySelector("[data-testid~='panel-mouseenter-container']");

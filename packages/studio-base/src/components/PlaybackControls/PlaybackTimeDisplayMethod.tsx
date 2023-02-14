@@ -161,7 +161,7 @@ export default function PlaybackTimeDisplayMethod({
   onPause,
   isPlaying,
 }: PlaybackTimeDisplayMethodProps): JSX.Element {
-  const timeOutID: any = useRef(undefined);
+  const timeOutID = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const timeFormat = useAppTimeFormat();
   const timeRawString = useMemo(
     () => (currentTime ? formatTimeRaw(currentTime) : undefined),
@@ -225,7 +225,9 @@ export default function PlaybackTimeDisplayMethod({
     }
 
     return () => {
-      clearTimeout(timeOutID.current);
+      if (timeOutID.current != undefined) {
+        clearTimeout(timeOutID.current);
+      }
     };
   }, [hasError, inputText, isPlaying]);
 

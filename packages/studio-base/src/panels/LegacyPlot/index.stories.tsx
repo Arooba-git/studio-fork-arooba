@@ -196,12 +196,14 @@ export const EmptyTopic: Story = () => {
 };
 
 export const WithTooltip: Story = () => {
-  const timeOutID: any = useRef(undefined);
+  const timeOutID = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const readySignal = useReadySignal();
 
   useEffect(() => {
     return () => {
-      clearTimeout(timeOutID.current);
+      if (timeOutID.current != undefined) {
+        clearTimeout(timeOutID.current);
+      }
     };
   }, []);
 
