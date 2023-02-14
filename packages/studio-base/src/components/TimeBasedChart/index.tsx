@@ -176,6 +176,7 @@ export default function TimeBasedChart(props: Props): JSX.Element {
   );
 
   const resumeFrame = useRef<() => void | undefined>();
+  const requestedResumeFrame = useRef<() => void | undefined>();
 
   // when data changes, we pause and wait for onFinishRender to resume
   const onStartRender = useCallback(() => {
@@ -193,10 +194,14 @@ export default function TimeBasedChart(props: Props): JSX.Element {
   const onFinishRender = useCallback(() => {
     const current = resumeFrame.current;
     resumeFrame.current = undefined;
+    requestedResumeFrame.current = current;
 
     if (current) {
       // allow the chart offscreen canvas to render to screen before calling done
-      requestID.current = requestAnimationFrame(current);
+      requestID.current = requestAnimationFrame(() => {
+        current();
+        requestedResumeFrame.current = undefined;
+      });
     }
   }, []);
 
@@ -205,6 +210,7 @@ export default function TimeBasedChart(props: Props): JSX.Element {
     return () => {
       onFinishRender();
       cancelAnimationFrame(requestID.current);
+      requestedResumeFrame.current?.();
     };
   }, [pauseFrame, onFinishRender]);
 
