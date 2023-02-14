@@ -21,7 +21,7 @@ export default function Snow({ effect }: { effect: "snow" | "confetti" }): JSX.E
   const containerRef = useRef<HTMLDivElement>(ReactNull);
 
   useLayoutEffect(() => {
-    let requestID: ReturnType <typeof requestAnimationFrame>;
+    let requestID: ReturnType<typeof requestAnimationFrame>;
     const container = containerRef.current;
     if (!container) {
       return;
