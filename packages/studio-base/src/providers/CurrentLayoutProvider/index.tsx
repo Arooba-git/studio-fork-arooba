@@ -230,7 +230,10 @@ export default function CurrentLayoutProvider({
       }
     };
     layoutManager.on("change", listener);
-    return () => layoutManager.off("change", listener);
+    return () => {
+      layoutManager.off("change", listener);
+      clearTimeout(debouncedSaveTimeout.current);
+    };
   }, [layoutManager, setLayoutState]);
 
   // Make sure our layout still exists after changes. If not deselect it.

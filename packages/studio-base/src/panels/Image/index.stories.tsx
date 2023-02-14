@@ -2,7 +2,7 @@
 // License, v2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import TestUtils from "react-dom/test-utils";
 
 import PanelSetup from "@foxglove/studio-base/stories/PanelSetup";
@@ -15,6 +15,13 @@ export default {
 };
 
 function useHoverOnPanel(andThen?: () => void) {
+  useEffect(() => {
+    return () => {
+      clearTimeout(timeOutID.current);
+    };
+  }, []);
+
+  const timeOutID: any = useRef(undefined);
   const callback = useRef(andThen); // should not change
   return () => {
     const container = document.querySelector("[data-testid~='panel-mouseenter-container']");
@@ -24,7 +31,7 @@ function useHoverOnPanel(andThen?: () => void) {
     TestUtils.Simulate.mouseEnter(container);
 
     // wait for hover to complete
-    setTimeout(() => callback.current?.(), 10);
+    timeOutID.current = setTimeout(() => callback.current?.(), 10);
   };
 }
 
